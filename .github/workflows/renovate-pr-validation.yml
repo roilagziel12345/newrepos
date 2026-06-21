@@ -1,0 +1,47 @@
+name: Renovate PR validation
+
+on:
+  pull_request:
+    paths:
+      - 'examples/node-app/**'
+      - 'examples/java-app/**'
+      - 'examples/python-app/**'
+
+permissions:
+  contents: read
+
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/node-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+  maven:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - run: mvn -B -f examples/java-app/pom.xml test
+  python:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/python-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - run: pytest
