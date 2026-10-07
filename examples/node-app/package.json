@@ -3,5 +3,5 @@
   "private": true,
   "version": "1.0.0",
   "scripts": { "test": "node --test" },
-  "dependencies": { "lodash": "4.17.20" }
+  "dependencies": { "lodash": "4.18.1" }
 }
