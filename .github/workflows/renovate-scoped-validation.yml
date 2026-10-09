@@ -93,7 +93,7 @@ jobs:
         if: matrix.language == 'poetry' || matrix.language == 'pipenv' || matrix.language == 'pip'
         uses: actions/setup-python@v7
         with:
-          python-version: '3.11'
+          python-version: '3.14'
 
       - name: Validate Node.js project
         if: matrix.language == 'node'
