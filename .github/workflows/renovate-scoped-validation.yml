@@ -14,6 +14,9 @@ concurrency:
 jobs:
   plan:
     name: Detect changed manifest
+    # pull_request branch filters match the base branch, not the PR head.
+    # Jenkins owns renovate/* PR validation, so skip those heads explicitly.
+    if: ${{ github.event_name != 'pull_request' || !startsWith(github.head_ref, 'renovate/') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
@@ -59,7 +62,7 @@ jobs:
   validate:
     name: Validate ${{ matrix.language }} (${{ matrix.directory }})
     needs: plan
-    if: needs.plan.result == 'success' && needs.plan.outputs.has-build == 'true'
+    if: ${{ (github.event_name != 'pull_request' || !startsWith(github.head_ref, 'renovate/')) && needs.plan.result == 'success' && needs.plan.outputs.has-build == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
@@ -200,7 +203,7 @@ jobs:
     needs:
       - plan
       - validate
-    if: always()
+    if: ${{ always() && (github.event_name != 'pull_request' || !startsWith(github.head_ref, 'renovate/')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
